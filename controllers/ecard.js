@@ -58,11 +58,7 @@ exports.cx = function(req, res, next) {
             console.log(lt);
 
             superagent.post('cas.ecjtu.edu.cn/cas/login')
-              //  .set('cookie', sres.Headers["set-Cookie"].toString())
-                // .send('encodedService=http%3a%2f%2fportal.ecjtu.edu.cn%2fdcp%2findex.jsp')
-                // .send('service=http://portal.ecjtu.edu.cn/dcp/index.jsp')
-                // .send('serviceName=null')
-                // .send('loginErrCnt=0')
+
                 .send('username=' + uid)
                 .send('password=' + a)
                 .send('lt=' + lt)
@@ -81,8 +77,15 @@ exports.cx = function(req, res, next) {
 
 
 exports.getCls = function(req, res, next) {
+    term = req.query.term;
+    banji = req.query.banji;
+    var s = {
+        status: 0,
+        content: 'none'
+    }
+    console.log("somebody query for class search");
     superagent.post("http://jwc.ecjtu.jx.cn:8080/jwcmis/classroom/class.jsp")
-.send("term=2015.1&banji=201321100703")
+.send("term=" + term + "&banji=" + banji)
 .charset("gb2312")
 .end(function(err, sres) {
     var kb = [];
@@ -97,8 +100,10 @@ exports.getCls = function(req, res, next) {
         kb.push(line);
     });
 
+    s.status = 1;
+    s.content = kb;
     //console.log(kb);
-    res.send(kb);
+    res.send(s);
 
 })
 }
